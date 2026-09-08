@@ -1,13 +1,24 @@
 package game;
 
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
+import maze.Maze;
 
 public class GamePanel extends JPanel {
 
+    private Maze maze;
+
+    private final int TILE_SIZE = 50;
+
     public GamePanel() {
-        setBackground(Color.WHITE);
+
+        maze = new Maze();
+
+        setPreferredSize(new Dimension(
+            maze.getCols() * TILE_SIZE,
+            maze.getRows() * TILE_SIZE
+        ));
     }
 
     @Override
@@ -15,8 +26,6 @@ public class GamePanel extends JPanel {
 
         super.paintComponent(g);
 
-        g.setColor(Color.BLACK);
-
-        g.drawString("Maze Game", 220, 250);
+        maze.draw(g, TILE_SIZE);
     }
 }

@@ -1,7 +1,4 @@
-package player;
-
-public class Player {
-
-    // Player functionality will be implemented in Week 5
-
-}
+Week-4
+├── Main.java
+├── GamePanel.java
+└── Maze.java

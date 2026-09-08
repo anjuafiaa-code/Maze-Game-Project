@@ -1,22 +1,28 @@
 package maze;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 public class Maze {
 
     private final int[][] maze = {
-        {1,1,1,1,1,1,1,1,1,1},
-        {1,0,0,0,1,0,1,0,0,1},
-        {1,1,1,0,1,0,1,0,1,1},
-        {1,0,0,0,0,0,1,0,0,1},
-        {1,0,1,1,1,0,1,1,0,1},
-        {1,0,0,0,1,0,0,0,0,1},
-        {1,1,1,0,1,1,1,1,0,1},
-        {1,0,0,0,0,0,0,1,0,1},
-        {1,0,1,1,1,1,0,0,0,1},
-        {1,1,1,1,1,1,1,1,1,1}
+
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 0, 0, 0, 1, 0, 1, 1, 1, 1},
+        {1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0, 0, 1, 0, 1, 1},
+        {1, 0, 1, 1, 1, 0, 1, 0, 1, 1},
+        {1, 0, 0, 1, 0, 0, 1, 0, 1, 1},
+        {1, 1, 1, 1, 1, 0, 0, 0, 1, 1},
+        {1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
+
+ 
+    private final int startRow = 1;
+    private final int startCol = 1;
+
+    
+    private final int exitRow = 8;
+    private final int exitCol = 8;
 
     public int getRows() {
         return maze.length;
@@ -26,37 +32,23 @@ public class Maze {
         return maze[0].length;
     }
 
-    public boolean isWall(int row, int col) {
-        return maze[row][col] == 1;
+    public int getCell(int row, int col) {
+        return maze[row][col];
     }
 
-    public void draw(Graphics g, int tileSize) {
+    public int getStartRow() {
+        return startRow;
+    }
 
-        for (int row = 0; row < maze.length; row++) {
+    public int getStartCol() {
+        return startCol;
+    }
 
-            for (int col = 0; col < maze[row].length; col++) {
+    public int getExitRow() {
+        return exitRow;
+    }
 
-                if (maze[row][col] == 1) {
-                    g.setColor(Color.BLACK);
-                } else {
-                    g.setColor(Color.WHITE);
-                }
-
-                g.fillRect(
-                    col * tileSize,
-                    row * tileSize,
-                    tileSize,
-                    tileSize
-                );
-
-                g.setColor(Color.GRAY);
-                g.drawRect(
-                    col * tileSize,
-                    row * tileSize,
-                    tileSize,
-                    tileSize
-                );
-            }
-        }
+    public int getExitCol() {
+        return exitCol;
     }
 }

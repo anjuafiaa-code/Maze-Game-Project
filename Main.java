@@ -12,12 +12,14 @@ public class Main {
 
         frame.add(gamePanel);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(520, 540);
 
-        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
+
+        gamePanel.requestFocusInWindow();
     }
 }

@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import maze.Maze;
 import player.Player;
 
@@ -17,13 +18,22 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private final int TILE_SIZE = 50;
 
+    // Game state
     private boolean gameWon = false;
+    private boolean gameStarted = false;
+
+    // Timer
+    private int timeSeconds = 0;
+    private Timer timer;
+
+    // Move count
+    private int moves = 0;
 
     public GamePanel() {
 
         maze = new Maze();
 
-        
+        // Player starts at START position
         player = new Player(
                 maze.getStartRow(),
                 maze.getStartCol()
@@ -31,6 +41,11 @@ public class GamePanel extends JPanel implements KeyListener {
 
         setFocusable(true);
         addKeyListener(this);
+
+        // Timer runs every 1 second
+        timer = new Timer(1000, e -> {
+            timeSeconds++;
+        });
     }
 
     @Override
@@ -38,7 +53,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
         super.paintComponent(g);
 
-        
+        // Draw maze
         for (int row = 0; row < maze.getRows(); row++) {
 
             for (int col = 0; col < maze.getCols(); col++) {
@@ -47,7 +62,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
                 if (cell == 1) {
 
-                    
+                    // Wall
                     g.setColor(Color.BLACK);
 
                     g.fillRect(
@@ -59,7 +74,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
                 } else {
 
-                    
+                    // Path
                     g.setColor(Color.WHITE);
 
                     g.fillRect(
@@ -69,7 +84,7 @@ public class GamePanel extends JPanel implements KeyListener {
                             TILE_SIZE
                     );
 
-                    
+                    // Border
                     g.setColor(Color.LIGHT_GRAY);
 
                     g.drawRect(
@@ -82,7 +97,7 @@ public class GamePanel extends JPanel implements KeyListener {
             }
         }
 
-        
+        // Draw START
         g.setColor(Color.RED);
         g.setFont(new Font("Arial", Font.BOLD, 9));
 
@@ -92,7 +107,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 maze.getStartRow() * TILE_SIZE + 12
         );
 
-        
+        // Draw END
         g.setColor(Color.GREEN);
         g.setFont(new Font("Arial", Font.BOLD, 12));
 
@@ -102,7 +117,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 maze.getExitRow() * TILE_SIZE + 15
         );
 
-      
+        // Draw Player
         g.setColor(Color.RED);
 
         g.fillOval(
@@ -113,24 +128,31 @@ public class GamePanel extends JPanel implements KeyListener {
         );
     }
 
-   
+    // Check whether player can move
     private boolean canMove(int newRow, int newCol) {
 
-        
+        // Check maze boundary
         if (newRow < 0 || newRow >= maze.getRows()
                 || newCol < 0 || newCol >= maze.getCols()) {
 
             return false;
         }
 
-        
+        // Player can move only on path
         return maze.getCell(newRow, newCol) == 0;
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
 
-        
+        // Press R to restart
+        if (e.getKeyCode() == KeyEvent.VK_R) {
+
+            restartGame();
+            return;
+        }
+
+        // Stop movement after winning
         if (gameWon) {
             return;
         }
@@ -138,46 +160,88 @@ public class GamePanel extends JPanel implements KeyListener {
         int newRow = player.getRow();
         int newCol = player.getCol();
 
-        
+        // Up
         if (e.getKeyCode() == KeyEvent.VK_UP) {
 
             newRow--;
 
-        
+        // Down
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 
             newRow++;
 
-        
+        // Left
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 
             newCol--;
 
-        
+        // Right
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 
             newCol++;
         }
 
-        
+        // Move only if destination is a path
         if (canMove(newRow, newCol)) {
 
+            // Start timer on first valid movement
+            if (!gameStarted) {
+
+                gameStarted = true;
+                timer.start();
+            }
+
+            // Update player position
             player.setPosition(newRow, newCol);
+
+            // Count valid moves
+            moves++;
 
             repaint();
 
- 
+            // Check winning condition
             if (newRow == maze.getExitRow()
                     && newCol == maze.getExitCol()) {
 
                 gameWon = true;
 
+                // Stop timer
+                timer.stop();
+
                 JOptionPane.showMessageDialog(
                         this,
-                        "Congratulations! You reached the END!"
+                        "Congratulations! You reached the END!\n"
+                        + "Time: " + timeSeconds + " seconds\n"
+                        + "Moves: " + moves + "\n\n"
+                        + "Press R to Restart"
                 );
             }
         }
+    }
+
+    // Restart and reset the game
+    public void restartGame() {
+
+        // Stop timer
+        timer.stop();
+
+        // Reset player position
+        player.setPosition(
+                maze.getStartRow(),
+                maze.getStartCol()
+        );
+
+        // Reset game state
+        gameWon = false;
+        gameStarted = false;
+
+        // Reset timer and moves
+        timeSeconds = 0;
+        moves = 0;
+
+        repaint();
+
+        requestFocusInWindow();
     }
 
     @Override

@@ -12,11 +12,13 @@ public class Main {
 
         frame.add(gamePanel);
 
-        frame.setSize(520, 540);
+        frame.setSize(520, 570);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.setLocationRelativeTo(null);
+
+        frame.setResizable(false);
 
         frame.setVisible(true);
 

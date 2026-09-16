@@ -5,22 +5,20 @@ public class Maze {
     private final int[][] maze = {
 
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 0, 0, 0, 1, 0, 1, 0, 0, 1},
-        {1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
-        {1, 0, 0, 0, 0, 0, 1, 0, 1, 1},
-        {1, 0, 1, 1, 1, 0, 0, 0, 1, 1},
-        {1, 0, 1, 1, 0, 0, 1, 0, 1, 1},
-        {1, 0, 1, 0, 1, 0, 0, 0, 1, 1},
         {1, 0, 0, 0, 1, 0, 1, 1, 1, 1},
+        {1, 1, 1, 0, 1, 0, 1, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 1, 0, 1, 1},
+        {1, 0, 1, 1, 1, 0, 1, 0, 1, 1},
+        {1, 0, 0, 0, 0, 0, 1, 0, 1, 1},
+        {1, 1, 1, 1, 1, 0, 0, 0, 1, 1},
+        {1, 0, 0, 0, 0, 0, 1, 1, 1, 1},
         {1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
-    private final int startRow = 1;
-    private final int startCol = 1;
-
-    private final int exitRow = 8;
-    private final int exitCol = 8;
+    public int[][] getMaze() {
+        return maze;
+    }
 
     public int getRows() {
         return maze.length;
@@ -35,18 +33,18 @@ public class Maze {
     }
 
     public int getStartRow() {
-        return startRow;
+        return 1;
     }
 
     public int getStartCol() {
-        return startCol;
+        return 1;
     }
 
     public int getExitRow() {
-        return exitRow;
+        return 8;
     }
 
     public int getExitCol() {
-        return exitCol;
+        return 8;
     }
 }

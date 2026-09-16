@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,8 +24,10 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private boolean gameWon = false;
     private boolean gameStarted = false;
+    private boolean paused = false;
 
     private int timeSeconds = 0;
+
     private Timer timer;
 
     private int moves = 0;
@@ -34,10 +37,17 @@ public class GamePanel extends JPanel implements KeyListener {
     private JLabel statusLabel;
 
     private JButton restartButton;
+    private JButton pauseButton;
+
+    private JComboBox<String> difficultyBox;
+
+    private String difficulty;
 
     public GamePanel() {
 
-        maze = new Maze();
+        difficulty = "Easy";
+
+        maze = new Maze(difficulty);
 
         player = new Player(
                 maze.getStartRow(),
@@ -53,21 +63,50 @@ public class GamePanel extends JPanel implements KeyListener {
         statusLabel = new JLabel("Status: Ready");
 
         restartButton = new JButton("Restart");
+        pauseButton = new JButton("Pause");
 
-        Font labelFont = new Font("Arial", Font.BOLD, 14);
+        difficultyBox = new JComboBox<>(
+                new String[]{"Easy", "Medium", "Hard"}
+        );
 
-        timeLabel.setFont(labelFont);
-        movesLabel.setFont(labelFont);
-        statusLabel.setFont(labelFont);
-        restartButton.setFont(labelFont);
+        Font font = new Font("Arial", Font.BOLD, 13);
+
+        timeLabel.setFont(font);
+        movesLabel.setFont(font);
+        statusLabel.setFont(font);
+        restartButton.setFont(font);
+        pauseButton.setFont(font);
+        difficultyBox.setFont(font);
+
+        difficultyBox.setSelectedItem(difficulty);
+
+        difficultyBox.addActionListener(e -> {
+
+            String selected =
+                    (String) difficultyBox.getSelectedItem();
+
+            if (!selected.equals(difficulty)) {
+
+                difficulty = selected;
+
+                restartGame();
+            }
+        });
 
         restartButton.setFocusable(false);
 
         restartButton.addActionListener(e -> restartGame());
 
+        pauseButton.setFocusable(false);
+
+        pauseButton.addActionListener(e -> togglePause());
+
+        infoPanel.add(new JLabel("Difficulty:"));
+        infoPanel.add(difficultyBox);
         infoPanel.add(timeLabel);
         infoPanel.add(movesLabel);
         infoPanel.add(statusLabel);
+        infoPanel.add(pauseButton);
         infoPanel.add(restartButton);
 
         add(infoPanel, BorderLayout.NORTH);
@@ -76,7 +115,9 @@ public class GamePanel extends JPanel implements KeyListener {
         addKeyListener(this);
 
         timer = new Timer(1000, e -> {
+
             timeSeconds++;
+
             updateLabels();
         });
     }
@@ -152,6 +193,32 @@ public class GamePanel extends JPanel implements KeyListener {
                 TILE_SIZE - 24,
                 TILE_SIZE - 26
         );
+
+        if (paused) {
+
+            g.setColor(Color.BLACK);
+
+            g.setFont(new Font("Arial", Font.BOLD, 30));
+
+            g.drawString(
+                    "PAUSED",
+                    maze.getCols() * TILE_SIZE / 2 - 60,
+                    maze.getRows() * TILE_SIZE / 2
+            );
+        }
+
+        if (gameWon) {
+
+            g.setColor(Color.GREEN);
+
+            g.setFont(new Font("Arial", Font.BOLD, 28));
+
+            g.drawString(
+                    "YOU WIN!",
+                    maze.getCols() * TILE_SIZE / 2 - 65,
+                    maze.getRows() * TILE_SIZE / 2
+            );
+        }
     }
 
     private boolean canMove(int newRow, int newCol) {
@@ -175,7 +242,14 @@ public class GamePanel extends JPanel implements KeyListener {
             return;
         }
 
-        if (gameWon) {
+        if (e.getKeyCode() == KeyEvent.VK_P) {
+
+            togglePause();
+
+            return;
+        }
+
+        if (gameWon || paused) {
 
             return;
         }
@@ -228,15 +302,62 @@ public class GamePanel extends JPanel implements KeyListener {
 
                 statusLabel.setText("Status: Won");
 
+                pauseButton.setEnabled(false);
+
+                repaint();
+
+                java.awt.Toolkit.getDefaultToolkit().beep();
+
                 JOptionPane.showMessageDialog(
                         this,
-                        "Congratulations! You reached the END!\n"
-                        + "Time: " + timeSeconds + " seconds\n"
-                        + "Moves: " + moves + "\n\n"
-                        + "Press R or click Restart"
+                        "Congratulations!\n"
+                        + "You completed the "
+                        + difficulty
+                        + " maze!\n\n"
+                        + "Time: "
+                        + timeSeconds
+                        + " seconds\n"
+                        + "Moves: "
+                        + moves
+                        + "\n\n"
+                        + "Click Restart to play again."
                 );
             }
         }
+    }
+
+    private void togglePause() {
+
+        if (gameWon) {
+            return;
+        }
+
+        if (!gameStarted) {
+            return;
+        }
+
+        if (!paused) {
+
+            paused = true;
+
+            timer.stop();
+
+            pauseButton.setText("Resume");
+
+            statusLabel.setText("Status: Paused");
+
+        } else {
+
+            paused = false;
+
+            timer.start();
+
+            pauseButton.setText("Pause");
+
+            statusLabel.setText("Status: Playing");
+        }
+
+        repaint();
     }
 
     private void updateLabels() {
@@ -253,6 +374,10 @@ public class GamePanel extends JPanel implements KeyListener {
 
             statusLabel.setText("Status: Ready");
 
+        } else if (paused) {
+
+            statusLabel.setText("Status: Paused");
+
         } else if (!gameWon) {
 
             statusLabel.setText("Status: Playing");
@@ -263,6 +388,8 @@ public class GamePanel extends JPanel implements KeyListener {
 
         timer.stop();
 
+        maze = new Maze(difficulty);
+
         player.setPosition(
                 maze.getStartRow(),
                 maze.getStartCol()
@@ -270,9 +397,13 @@ public class GamePanel extends JPanel implements KeyListener {
 
         gameWon = false;
         gameStarted = false;
+        paused = false;
 
         timeSeconds = 0;
         moves = 0;
+
+        pauseButton.setText("Pause");
+        pauseButton.setEnabled(true);
 
         updateLabels();
 

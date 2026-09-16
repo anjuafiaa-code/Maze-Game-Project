@@ -2,22 +2,73 @@ package maze;
 
 public class Maze {
 
-    private final int[][] maze = {
+    private int[][] maze;
 
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 0, 0, 0, 1, 0, 1, 1, 1, 1},
-        {1, 1, 1, 0, 1, 0, 1, 0, 0, 1},
-        {1, 0, 0, 0, 0, 0, 1, 0, 1, 1},
-        {1, 0, 1, 1, 1, 0, 1, 0, 1, 1},
-        {1, 0, 0, 0, 0, 0, 1, 0, 1, 1},
-        {1, 1, 1, 1, 1, 0, 0, 0, 1, 1},
-        {1, 0, 0, 0, 0, 0, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-    };
+    private int startRow;
+    private int startCol;
 
-    public int[][] getMaze() {
-        return maze;
+    private int exitRow;
+    private int exitCol;
+
+    public Maze(String difficulty) {
+
+        if (difficulty.equals("Easy")) {
+
+            maze = new int[][]{
+                {1,1,1,1,1,1},
+                {1,0,0,0,0,1},
+                {1,0,1,1,0,1},
+                {1,0,0,0,0,1},
+                {1,1,1,1,0,1},
+                {1,1,1,1,1,1}
+            };
+
+            startRow = 1;
+            startCol = 1;
+
+            exitRow = 4;
+            exitCol = 4;
+
+        } else if (difficulty.equals("Medium")) {
+
+            maze = new int[][]{
+                {1,1,1,1,1,1,1,1},
+                {1,0,0,0,1,0,0,1},
+                {1,1,1,0,1,0,1,1},
+                {1,0,0,0,0,0,0,1},
+                {1,0,1,1,1,1,0,1},
+                {1,0,0,0,0,0,1,1},
+                {1,1,1,1,1,0,0,1},
+                {1,1,1,1,1,1,1,1}
+            };
+
+            startRow = 1;
+            startCol = 1;
+
+            exitRow = 6;
+            exitCol = 6;
+
+        } else {
+
+            maze = new int[][]{
+                {1,1,1,1,1,1,1,1,1,1},
+                {1,0,0,0,1,0,0,0,0,1},
+                {1,1,1,0,1,0,1,1,0,1},
+                {1,0,0,0,0,0,1,0,0,1},
+                {1,0,1,1,1,1,1,0,1,1},
+                {1,0,0,0,0,0,1,0,0,1},
+                {1,1,1,1,1,0,1,1,0,1},
+                {1,0,0,0,0,0,1,0,0,1},
+                {1,1,1,1,1,1,1,1,0,1},
+                {1,1,1,1,1,1,1,1,1,1}
+            };
+
+            startRow = 1;
+            startCol = 1;
+
+            exitRow = 8;
+            exitCol = 8;
+        }
     }
 
     public int getRows() {
@@ -33,18 +84,18 @@ public class Maze {
     }
 
     public int getStartRow() {
-        return 1;
+        return startRow;
     }
 
     public int getStartCol() {
-        return 1;
+        return startCol;
     }
 
     public int getExitRow() {
-        return 8;
+        return exitRow;
     }
 
     public int getExitCol() {
-        return 8;
+        return exitCol;
     }
 }

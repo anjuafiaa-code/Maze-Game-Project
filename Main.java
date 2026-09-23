@@ -6,13 +6,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-        JFrame frame = new JFrame("Maze Game");
+        JFrame frame =
+                new JFrame("Maze Adventure");
 
-        GamePanel gamePanel = new GamePanel();
+        GamePanel gamePanel =
+                new GamePanel();
 
         frame.add(gamePanel);
 
-        frame.setSize(700, 580);
+        frame.setSize(900, 700);
 
         frame.setDefaultCloseOperation(
                 JFrame.EXIT_ON_CLOSE
